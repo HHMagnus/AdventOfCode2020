@@ -37,22 +37,26 @@ int main()
     if (lines.find(rev) != lines.end())
     {
       cout << rev << ',' << x << '\n';
+      break;
     }
   }
 
   // Day 2
-  set<int>::iterator it;
+  set<int>::iterator it1;
   set<int>::iterator it2;
-  for(it = lines.begin(); it != lines.end(); ++it) {
-    for(it2 = it; it2 != lines.end(); ++it2) {
-      int x1 = *it;
+  for (it1 = lines.begin(); it1 != lines.end(); ++it1)
+  {
+    for (it2 = it1; it2 != lines.end(); ++it2)
+    {
+      int x1 = *it1;
       int x2 = *it2;
       int rev = YEAR - x1 - x2;
-      if (lines.find(rev) != lines.end()) {
+      if (lines.find(rev) != lines.end())
+      {
         cout << x1 << ',' << x2 << ',' << rev << '\n';
+        return 0;
       }
     }
-
   }
   return 0;
 }
