@@ -24,20 +24,24 @@ list<string> get_lines()
     return lines;
 }
 
-int trees_hit(list<string> lines, int right, int down) {
+int trees_hit(list<string> lines, int right, int down)
+{
     int x = 0;
     int y = 0;
     int trees = 0;
     list<string>::iterator iter = lines.begin();
-    while(y < lines.size()) {
+    while (y < lines.size())
+    {
         string line = *iter;
-        if(line.c_str()[x] == '#'){
+        if (line.c_str()[x] == '#')
+        {
             trees += 1;
         }
 
         x = (x + right) % line.length();
         y += down;
-        for(int i = 0; i < down; i++){
+        for (int i = 0; i < down; i++)
+        {
             iter++;
         }
     }
