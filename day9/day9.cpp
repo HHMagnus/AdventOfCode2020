@@ -54,14 +54,14 @@ int main()
         ++current;
     }
     list<long long>::iterator preambe_start = lines.begin();
-    while(preamble(*current, preambe_start))
+    while (preamble(*current, preambe_start))
     {
         ++current;
         ++preambe_start;
     }
     long long invalid = *current;
     cout << "Day 1: " << *current << '\n';
-    
+
     list<long long>::iterator start = lines.begin();
     list<long long>::iterator end = lines.begin();
 
@@ -69,26 +69,31 @@ int main()
     ++end;
     total += *end;
 
-    while(total != invalid)
+    while (total != invalid)
     {
-        if(total < invalid) {
+        if (total < invalid)
+        {
             ++end;
             total += *end;
-        }else {
+        }
+        else
+        {
             total -= *start;
             ++start;
         }
     }
     long long min = *start;
     long long max = *end;
-    while(start != end)
+    while (start != end)
     {
         long long x = *start;
-        if(x < min) min = x;
-        if(x > max) max = x;
+        if (x < min)
+            min = x;
+        if (x > max)
+            max = x;
         ++start;
     }
-    cout << "Day 2: " << min+max << '\n';
+    cout << "Day 2: " << min + max << '\n';
 
     return 0;
 }
