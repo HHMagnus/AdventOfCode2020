@@ -53,6 +53,37 @@ public:
     }
 };
 
+vector<string> str_rotate(vector<string> input) {
+    int length = input.size();
+    vector<string> nn;
+    for (int x = 0; x < length; x++) {
+        string s;
+        for (int y = 0; y < length; y++) {
+            s += input.at(y).at(length-1-x);
+        }
+        nn.push_back(s);
+    }
+    return nn;
+}
+
+vector<string> str_flip_horizontal(vector<string> input) {
+    vector<string> nt;
+    for (int i = input.size()-1; i >= 0; i--) {
+        nt.push_back(input.at(i));
+    }
+    return nt;
+}
+
+vector<string> str_flip_vertical(vector<string> input) {
+    vector<string> nt;
+    for (string s : input) {
+        string c = s;
+        reverse(c.begin(), c.end());
+        nt.push_back(c);
+    }
+    return nt;
+}
+
 class Tile
 {
 public:
@@ -155,34 +186,15 @@ public:
     }
 
     Tile rotate() {
-        int length = tiles.size();
-        vector<string> nn;
-        for (int x = 0; x < length; x++) {
-            string s;
-            for (int y = 0; y < length; y++) {
-                s += tiles.at(y).at(length-1-x);
-            }
-            nn.push_back(s);
-        }
-        return Tile(id, nn);
+        return Tile(id, str_rotate(tiles));
     }
 
     Tile flip_horizontal() {
-        vector<string> nt;
-        for (int i = tiles.size()-1; i >= 0; i--) {
-            nt.push_back(tiles.at(i));
-        }
-        return Tile(id, nt);
+        return Tile(id, str_flip_horizontal(tiles));
     }
 
     Tile flip_vertical() {
-        vector<string> nt;
-        for (string s : tiles) {
-            string c = s;
-            reverse(c.begin(), c.end());
-            nt.push_back(c);
-        }
-        return Tile(id, nt);
+        return Tile(id, str_flip_vertical(tiles));
     }
 
     Tile copy() {
@@ -287,6 +299,86 @@ Tile& get_id(vector<Tile>& tiles, int id) {
     }
     cout << "Cannot find id: " << id << "\n";
     exit( -1);
+}
+
+set<pair<int, int>> sea_monster(int y, int x) {
+    set<pair<int, int>> monster;
+    //Top row
+    monster.insert(make_pair(y+0, x+18));
+    // Middle row
+    monster.insert(make_pair(y+1, x+0));
+    monster.insert(make_pair(y+1, x+5));
+    monster.insert(make_pair(y+1, x+6));
+    monster.insert(make_pair(y+1, x+11));
+    monster.insert(make_pair(y+1, x+12));
+    monster.insert(make_pair(y+1, x+17));
+    monster.insert(make_pair(y+1, x+18));
+    monster.insert(make_pair(y+1, x+19));
+    // Bottom row
+    monster.insert(make_pair(y+2, x+1));
+    monster.insert(make_pair(y+2, x+4));
+    monster.insert(make_pair(y+2, x+7));
+    monster.insert(make_pair(y+2, x+10));
+    monster.insert(make_pair(y+2, x+13));
+    monster.insert(make_pair(y+2, x+16));
+    return monster;
+}
+
+set<pair<int, int>> total(vector<string> combined) {
+    set<pair<int,int>> contained;
+    for (int i = 0; i < combined.size(); i++) {
+        for (int j = 0; j < combined.size(); j++) {
+            if (combined.at(i).at(j) == '#') {
+                contained.insert(make_pair(i, j));
+            }
+        }
+    }
+    return contained;
+}
+
+set<pair<int, int>> without_monsters(set<pair<int, int>> contained, int size) {
+    set<pair<int, int>> monsters;
+    for (int y = 0; y < size; y++) {
+        for (int x = 0; x < size; x++) {
+            set<pair<int, int>> monster = sea_monster(y, x);
+            bool fully_contained = true;
+            for (pair<int,int> p : monster) {
+                if (contained.find(p) == contained.end()) {
+                    fully_contained = false;
+                }
+            }
+            if (fully_contained) {
+                monsters.insert(monster.begin(), monster.end());
+            }
+        }
+    }
+    return monsters;
+}
+
+int count_without_monsters(vector<string> combined) {
+    set<pair<int,int>> contained = total(combined);
+    set<pair<int,int>> without = without_monsters(contained, combined.size());
+    return contained.size() - without.size();
+}
+
+int day2_res(vector<string> combined) {
+    vector<int> scores;
+    scores.push_back(count_without_monsters(combined));
+    scores.push_back(count_without_monsters(str_flip_horizontal(combined)));
+    scores.push_back(count_without_monsters(str_flip_vertical(combined)));
+    vector<string> r1 = str_rotate(combined);
+    scores.push_back(count_without_monsters(r1));
+    scores.push_back(count_without_monsters(str_flip_horizontal(r1)));
+    scores.push_back(count_without_monsters(str_flip_vertical(r1)));
+    vector<string> r2 = str_rotate(r1);
+    scores.push_back(count_without_monsters(r2));
+    scores.push_back(count_without_monsters(str_flip_horizontal(r2)));
+    scores.push_back(count_without_monsters(str_flip_vertical(r2)));
+    vector<string> r3 = str_rotate(r2);
+    scores.push_back(count_without_monsters(r3));
+    scores.push_back(count_without_monsters(str_flip_horizontal(r3)));
+    scores.push_back(count_without_monsters(str_flip_vertical(r3)));
+    return *std::min_element(scores.begin(), scores.end());
 }
 
 int main()
@@ -414,6 +506,25 @@ int main()
         cout << "\n";
     }
 
+    vector<string> combined;
+
+    for (vector<Tile>& p : matched) {
+        for (int i = 1; i < 9; i++) {
+            string s;
+            for (Tile& t: p) {
+                s += t.tiles.at(i).substr(1, 8);
+            }
+            combined.push_back(s);
+        }
+    }
+
+    for (string s : combined) {
+        cout << s << "\n";
+    }
+
+    int res = day2_res(combined);
+
+    cout << "Day 1: " << res << '\n';
 
     return 0;
 }
