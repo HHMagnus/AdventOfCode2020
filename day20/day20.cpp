@@ -400,7 +400,7 @@ int main()
     {
         corner_product *= corner_id;
     }
-    cout << "Day 1: " << corner_product << '\n';
+    cout << "Day 20 part 1: " << corner_product << '\n';
 
     int length = sqrt(tiles.size());
 
@@ -524,7 +524,7 @@ int main()
 
     int res = day2_res(combined);
 
-    cout << "Day 1: " << res << '\n';
+    cout << "Day 20 part 2: " << res << '\n';
 
     return 0;
 }
