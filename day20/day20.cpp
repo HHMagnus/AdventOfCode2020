@@ -64,6 +64,29 @@ public:
         }
         return false;
     }
+
+    Tile(int idd, vector<string> tils) {
+        id = idd;
+        tiles = tils;
+
+        string side1 = tiles.at(0);
+        string side2 = tiles.at(9);
+        string side3;
+        for(int j = 0; j < 10; j++)
+        {
+            side3.append(tiles.at(j).substr(0,1));
+        }
+        string side4;
+        for(int j = 0; j < 10; j++)
+        {
+            side4.append(tiles.at(j).substr(9,1));
+        }
+
+        sides.push_back(Side(side1));
+        sides.push_back(Side(side2));
+        sides.push_back(Side(side3));
+        sides.push_back(Side(side4));
+    }
 };
 
 vector<Tile> get_tiles(vector<string> lines)
@@ -71,33 +94,16 @@ vector<Tile> get_tiles(vector<string> lines)
     vector<Tile> tiles;
     for (int i = 0; i < lines.size() / 12; i++)
     {
-        Tile tile;
         string id_line = lines.at(i * 12);
-        tile.id = stoi(id_line.substr(id_line.find(" ") + 1, 4));
+        int id = stoi(id_line.substr(id_line.find(" ") + 1, 4));
+        vector<string> tils;
         for (int j = 1; j <= 10; j++)
         {
             string tile_line = lines.at(i * 12 + j);
-            tile.tiles.push_back(tile_line);
-        }
-        string side1 = tile.tiles.at(0);
-        string side2 = tile.tiles.at(9);
-        string side3;
-        for(int j = 0; j < 10; j++)
-        {
-            side3.append(tile.tiles.at(j).substr(0,1));
-        }
-        string side4;
-        for(int j = 0; j < 10; j++)
-        {
-            side4.append(tile.tiles.at(j).substr(9,1));
+            tils.push_back(tile_line);
         }
 
-        tile.sides.push_back(Side(side1));
-        tile.sides.push_back(Side(side2));
-        tile.sides.push_back(Side(side3));
-        tile.sides.push_back(Side(side4));
-
-        tiles.push_back(tile);
+        tiles.push_back(Tile(id, tils));
     }
     return tiles;
 }
