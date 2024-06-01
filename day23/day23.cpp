@@ -12,19 +12,8 @@
 #include <bitset>
 using namespace std;
 
-int main()
-{
-    // insert correct input
-    int input = 123;
-    string str = to_string(input);
-    int length = str.length();
-    vector<int> src;
-    for (int i = 0; i < length; i++) {
-        string s = str.substr(i, 1).c_str();
-        int c = stoi(s);
-        src.push_back(c);
-    }
-
+void part1(vector<int> src) {
+    int length = src.size();
     int curr = src[0];
 
     for (int u = 0; u < 100; u++) {
@@ -88,6 +77,21 @@ int main()
     }
 
     cout << "Day 23 part 1: " << res << "\n";
+}
+
+int main()
+{
+    int input =  ;
+    string str = to_string(input);
+    int length = str.length();
+    vector<int> src;
+    for (int i = 0; i < length; i++) {
+        string s = str.substr(i, 1).c_str();
+        int c = stoi(s);
+        src.push_back(c);
+    }
+
+    part1(src);
 
     return 0;
 }
