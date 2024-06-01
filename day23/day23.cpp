@@ -79,9 +79,76 @@ void part1(vector<int> src) {
     cout << "Day 23 part 1: " << res << "\n";
 }
 
+class Cub {
+public:
+    int cub;
+    shared_ptr<Cub> next_cub;
+
+    Cub(int c) {
+        cub = c;
+    }
+};
+
+void part2(vector<int> src) {
+    int curr = src[0];
+
+    for (int i = 10; i <= 1000000; i++) {
+        src.push_back(i);
+    }
+
+    map<int, shared_ptr<Cub>> map;
+
+    shared_ptr<Cub> last_cub;
+
+    for (auto x : src) {
+        shared_ptr<Cub> cub = shared_ptr<Cub>(new Cub(x));
+        map[x] = cub;
+        if (last_cub != nullptr)
+            last_cub->next_cub = cub;
+        last_cub = cub;
+    }
+
+    last_cub->next_cub = map[src[0]];
+
+    for (int u = 0; u < 10000000; u++) {
+        shared_ptr<Cub> cub = map[curr];
+        int pick1 = cub->next_cub->cub;
+        int pick2 = cub->next_cub->next_cub->cub;
+        int pick3 = cub->next_cub->next_cub->next_cub->cub;
+
+        int dest = curr - 1;
+        while (dest == 0 || dest == pick1 || dest == pick2 || dest == pick3) {
+            dest--;
+            if (dest <= 0) {
+                dest = 1000000;
+            }
+        }
+
+        shared_ptr<Cub> dcub = map[dest];
+        shared_ptr<Cub> dnext = dcub->next_cub;
+
+        dcub->next_cub = cub->next_cub;
+
+        shared_ptr<Cub> after = cub->next_cub->next_cub->next_cub->next_cub;
+
+        cub->next_cub->next_cub->next_cub->next_cub = dnext;
+        cub->next_cub = after;
+
+        curr = cub->next_cub->cub;
+    }
+
+    shared_ptr<Cub> one = map[1];
+    long long next = one->next_cub->cub;
+    long long again = one->next_cub->next_cub->cub;
+
+    string res = to_string(next * again);
+
+    cout << "Day 23 part 2: " << res << "\n";
+}
+
 int main()
 {
-    int input =  ;
+    int input = ;
     string str = to_string(input);
     int length = str.length();
     vector<int> src;
@@ -92,6 +159,7 @@ int main()
     }
 
     part1(src);
+    part2(src);
 
     return 0;
 }
